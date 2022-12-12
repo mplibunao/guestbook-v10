@@ -1,0 +1,25 @@
+services:
+  postgres:
+    restart: "${DOCKER_RESTART_POLICY:-unless-stopped}"
+    image: mplibunao/postgres:14.5-alpine3.16
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: postgres
+      # Used for all databases
+      POSTGRES_PASSWORD: postgres
+      # User with the same name as the db is created
+      POSTGRES_MULTIPLE_DATABASES: guestbook_v10,guestbook_v10_test
+    env_file:
+      - .env
+    deploy:
+      resources:
+        limits:
+          cpus: "${DOCKER_POSTGRES_CPUS-0}"
+          memory: "${DOCKER_POSTGRES_MEMORY-0}"
+
+volumes:
+  db_data:
